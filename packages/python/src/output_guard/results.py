@@ -24,10 +24,22 @@ class ValidationResult:
     errors: list[str] = field(default_factory=list)
 
 
+RepairPass = Literal["A", "B"]
+"""Authoritative pass label per creative-CONN-0087 two-pass orchestrator.
+
+``A`` — Pass A combined-apply parse path (also covers raw-parse fast path).
+``B`` — Pass B isolating single-step fallback.
+
+Exhaustion is signalled by ``ParseError`` raise, not by this field — see
+orchestrator docstring + MC integration M4 catch contract.
+"""
+
+
 @dataclass(frozen=True, slots=True)
 class RepairResult:
     repaired: bool
     raw: str
+    pass_: RepairPass
     data: Any = None
     strategies_applied: list[str] = field(default_factory=list)
 

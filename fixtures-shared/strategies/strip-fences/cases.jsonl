@@ -1,0 +1,10 @@
+{"in": "```json\n{\"a\":1}\n```", "out": "{\"a\":1}"}
+{"in": "```\n[1]\n```", "out": "[1]"}
+{"in": "no fence", "out": "no fence"}
+{"in": "```yaml\nk: v\n```", "out": "k: v"}
+{"in": "```JSON\n[]\n```", "out": "[]"}
+{"in": "```json\n{\"a\":1}```", "out": "{\"a\":1}"}
+{"in": "```\n\n```", "out": ""}
+{"in": "  ```json\n{}\n```  ", "out": "{}"}
+{"in": "```js\nconsole\n```", "out": "console"}
+{"in": "```toml\nx=1\n```", "out": "x=1"}

@@ -1,0 +1,10 @@
+{"in": "{\"a\":1} // tail\n", "out": "{\"a\":1} \n"}
+{"in": "{/* x */\"a\":1}", "out": "{\"a\":1}"}
+{"in": "k: 1 # tail\n", "out": "k: 1 \n"}
+{"in": "{\"u\":\"#x\"}", "out": "{\"u\":\"#x\"}"}
+{"in": "no comment", "out": "no comment"}
+{"in": "// only line\n", "out": "\n"}
+{"in": "/* block only */", "out": ""}
+{"in": "a # tail", "out": "a "}
+{"in": "a // b\nc", "out": "a \nc"}
+{"in": "{\"a\":\"//u\"}", "out": "{\"a\":\"//u\"}"}

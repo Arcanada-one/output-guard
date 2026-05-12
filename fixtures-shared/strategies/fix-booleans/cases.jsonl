@@ -1,0 +1,10 @@
+{"in": "{\"a\": True}", "out": "{\"a\": true}"}
+{"in": "{\"a\": False}", "out": "{\"a\": false}"}
+{"in": "{\"a\": None}", "out": "{\"a\": null}"}
+{"in": "[True, False, None]", "out": "[true, false, null]"}
+{"in": "{\"label\": \"True\"}", "out": "{\"label\": \"true\"}"}
+{"in": "{\"a\": \"TrueValue\"}", "out": "{\"a\": \"TrueValue\"}"}
+{"in": "{\"a\": true}", "out": "{\"a\": true}"}
+{"in": "TrueAndFalse", "out": "TrueAndFalse"}
+{"in": "True True True", "out": "true true true"}
+{"in": "{\"a\": 1}", "out": "{\"a\": 1}"}

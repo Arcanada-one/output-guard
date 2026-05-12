@@ -1,0 +1,10 @@
+{"in": "\ufeff{\"a\":1}", "out": "{\"a\":1}"}
+{"in": "\u010a\u010a", "out": "\n\n"}
+{"in": "\u0120\u0120", "out": "  "}
+{"in": "a\ud800b", "out": "a\ufffdb"}
+{"in": "\u010a\u0120", "out": "\n "}
+{"in": "clean", "out": "clean"}
+{"in": "", "out": ""}
+{"in": "\ufeff", "out": ""}
+{"in": "ab", "out": "ab"}
+{"in": "\u010aa\ud801", "out": "\na\ufffd"}

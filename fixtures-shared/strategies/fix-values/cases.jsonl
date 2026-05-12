@@ -1,0 +1,10 @@
+{"in": "{\"a\": NaN}", "out": "{\"a\": null}"}
+{"in": "{\"a\": Infinity}", "out": "{\"a\": null}"}
+{"in": "{\"a\": -Infinity}", "out": "{\"a\": null}"}
+{"in": "{\"a\": undefined}", "out": "{\"a\": null}"}
+{"in": "{\"a\": NaN, \"b\": Infinity, \"c\": -Infinity, \"d\": undefined}", "out": "{\"a\": null, \"b\": null, \"c\": null, \"d\": null}"}
+{"in": "{\"a\": 1, \"b\": 2.5}", "out": "{\"a\": 1, \"b\": 2.5}"}
+{"in": "{\"a\": \"NaN\"}", "out": "{\"a\": \"NaN\"}"}
+{"in": "{\"a\":   NaN}", "out": "{\"a\": null}"}
+{"in": "{\"a\": true}", "out": "{\"a\": true}"}
+{"in": "{\"a\": \"Nancy\"}", "out": "{\"a\": \"Nancy\"}"}

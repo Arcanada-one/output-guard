@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "arcanada-output-guard"
-version = "0.0.1"
+version = "0.1.0"
 description = "Validate, repair, retry LLM structured output (JSON/YAML/TOML/python-literal)"
 readme = "README.md"
 license = { text = "MIT" }
@@ -24,6 +24,7 @@ dependencies = [
   "tomli-w>=1.0.0",
   "pydantic>=2.9",
   "jsonschema>=4.23",
+  "json-repair>=0.30",
 ]
 
 [project.urls]
@@ -39,6 +40,8 @@ dev = [
   "ruff>=0.7",
   "mypy>=1.13",
   "pip-audit>=2.7",
+  "types-PyYAML>=6.0",
+  "types-jsonschema>=4.23",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -50,6 +53,21 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# fix-quotes/fix-ellipsis intentionally contain Unicode smart-quote / ellipsis
+# characters — the whole purpose of these strategies is to normalise them.
+"src/output_guard/strategies/fix_quotes.py" = ["RUF001"]
+"src/output_guard/strategies/fix_ellipsis.py" = ["RUF001"]
+"src/output_guard/strategies/fix_truncated.py" = ["RUF001"]
+"src/output_guard/strategies/fix_encoding.py" = ["RUF001"]
+"src/output_guard/formats/detect.py" = ["RUF001"]
+"tests/strategies/test_fix_quotes.py" = ["RUF001"]
+"tests/strategies/test_strip_fences.py" = ["RUF001"]
+"tests/strategies/test_fix_encoding.py" = ["RUF001"]
+"tests/strategies/test_fix_ellipsis.py" = ["RUF001"]
+"tests/strategies/test_fix_truncated.py" = ["RUF001"]
+"tests/integration/test_real_world.py" = ["RUF001"]
 
 [tool.mypy]
 python_version = "3.11"
