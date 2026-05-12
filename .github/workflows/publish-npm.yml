@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "ts-v*"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to publish from (default: ts-v0.1.0)"
+        required: true
+        default: "ts-v0.1.0"
 
 jobs:
   publish:
