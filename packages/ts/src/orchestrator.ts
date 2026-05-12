@@ -3,13 +3,17 @@
  *
  * Pass A: apply all 15 strategies in CANONICAL_ORDER, then parse once.
  * Pass B: for each strategy individually, apply → parse. First success wins.
- * If both passes fail → pass: "exhausted".
  *
- * MANDATORY (F1): even syntactically-valid output is schema-validated.
- * Throws SchemaValidationError if schema validation fails after parse.
+ * Outcome contract (resolves M2 deviation #3 — caller-side catch is canonical):
+ *   - Success → RepairResult with authoritative `pass: "A" | "B"`.
+ *   - Schema rejects parsed data (F1 mandatory gate) → throw SchemaValidationError.
+ *   - Both passes parse-exhausted → throw ParseError. MC integration (M4) MUST
+ *     catch ParseError to construct `repair_report.pass: "exhausted"` and
+ *     `final_valid: false`. SchemaValidationError stays separate so MC can
+ *     distinguish "structurally repaired but wrong shape" from "unparseable".
  */
 import type { Format, RepairResult, ValidationResult } from "./results.js";
-import { SchemaValidationError } from "./errors.js";
+import { ParseError, SchemaValidationError } from "./errors.js";
 import { CANONICAL_ORDER } from "./strategies/index.js";
 import { parseJson } from "./formats/json.js";
 import { parseYaml } from "./formats/yaml.js";
@@ -92,7 +96,8 @@ export const repair = <T = unknown>(
 ): RepairResult<T> => {
   const fmt = resolveFormat(text, format);
 
-  // Try pass A
+  // Pass A — combined apply, then parse once. Strategies that no-op still leave
+  // text unchanged, so a clean-input case reaches tryParse via empty `applied`.
   const aResult = passA(text, fmt);
   if (aResult !== null) {
     const parsed = tryParse(aResult.text, fmt);
@@ -102,10 +107,11 @@ export const repair = <T = unknown>(
       data: validated,
       raw: aResult.text,
       strategiesApplied: aResult.applied,
+      pass: "A",
     };
   }
 
-  // Try pass B
+  // Pass B — isolating single-step fallback.
   const bResult = passB(text, fmt);
   if (bResult !== null) {
     const parsed = tryParse(bResult.text, fmt);
@@ -115,22 +121,11 @@ export const repair = <T = unknown>(
       data: validated,
       raw: bResult.text,
       strategiesApplied: bResult.applied,
+      pass: "B",
     };
   }
 
-  // Exhausted — try raw parse as last resort
-  const rawParsed = tryParse(text, fmt);
-  if (rawParsed !== null) {
-    const validated = runSchema<T>(rawParsed, schema);
-    return {
-      repaired: false,
-      data: validated,
-      raw: text,
-      strategiesApplied: [],
-    };
-  }
-
-  throw new SchemaValidationError("Both passes exhausted: could not parse or repair input", []);
+  throw new ParseError("Both passes exhausted: could not parse or repair input");
 };
 
 /** Validate without repair attempt — just parse + schema. */

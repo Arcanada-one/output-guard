@@ -13,6 +13,14 @@ export interface RepairResult<T = unknown> {
   data?: T;
   raw: string;
   strategiesApplied: string[];
+  /**
+   * Authoritative pass label per creative-CONN-0087 two-pass orchestrator.
+   * "A" — Pass A combined-apply parse path (also covers raw-parse fast path).
+   * "B" — Pass B isolating single-step fallback.
+   * Exhaustion is signalled by ParseError throw, not by this field — see
+   * orchestrator docstring + MC integration M4 catch contract.
+   */
+  pass: "A" | "B";
 }
 
 /**

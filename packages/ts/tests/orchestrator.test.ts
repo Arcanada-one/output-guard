@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { repair, validate, validateAndRepair, parse } from "../src/orchestrator.js";
 import { zodAdapter } from "../src/adapters/zod.js";
-import { SchemaValidationError } from "../src/errors.js";
+import { ParseError, SchemaValidationError } from "../src/errors.js";
 
 describe("orchestrator: validate", () => {
   it("validates clean JSON without schema", () => {
@@ -90,6 +90,33 @@ describe("orchestrator: exhausted", () => {
   it("throws on JSON with only closing brace (unrepaireable)", () => {
     // jsonrepair fails on lone "}"
     expect(() => repair("}", "json")).toThrow();
+  });
+});
+
+describe("orchestrator: pass field (deviation #3 resolution)", () => {
+  it("returns pass='A' on clean input (raw parse via Pass A no-op)", () => {
+    const result = repair('{"a": 1}', "json");
+    expect(result.pass).toBe("A");
+    expect(result.repaired).toBe(false);
+    expect(result.strategiesApplied).toEqual([]);
+  });
+
+  it("returns pass='A' when Pass A combined-apply repairs successfully", () => {
+    const result = repair('{"a": True, "b": False,}', "json");
+    expect(result.pass).toBe("A");
+    expect(result.repaired).toBe(true);
+    expect(result.data).toEqual({ a: true, b: false });
+  });
+
+  it("throws ParseError (not SchemaValidationError) when both passes parse-exhaust", () => {
+    expect(() => repair("}", "json")).toThrow(ParseError);
+  });
+
+  it("throws SchemaValidationError (not ParseError) when parse succeeds but schema rejects", () => {
+    const schema = z.object({ a: z.string() });
+    const adapter = zodAdapter(schema).validate;
+    expect(() => repair('{"a": 1}', "json", adapter)).toThrow(SchemaValidationError);
+    expect(() => repair('{"a": 1}', "json", adapter)).not.toThrow(ParseError);
   });
 });
 

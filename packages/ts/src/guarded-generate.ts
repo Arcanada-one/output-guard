@@ -104,7 +104,7 @@ export const guardedGenerate = async <T = unknown>(
         strategiesApplied: repairResult.strategiesApplied,
         retries: attempt,
         finalValid: true,
-        pass: repairResult.repaired ? "B" : "A",
+        pass: repairResult.pass,
       };
       return { data: repairResult.data as T, report };
     } catch (e) {
