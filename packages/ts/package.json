@@ -1,6 +1,6 @@
 {
   "name": "@arcanada/output-guard",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Validate, repair, retry LLM structured output (JSON/YAML/TOML/python-literal)",
   "license": "MIT",
   "author": "Arcanada <pavel@arcanada.one>",
