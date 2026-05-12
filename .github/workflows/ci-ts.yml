@@ -1,0 +1,40 @@
+name: ci-ts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/ts/**"
+      - "fixtures-shared/**"
+      - ".github/workflows/ci-ts.yml"
+  pull_request:
+    paths:
+      - "packages/ts/**"
+      - "fixtures-shared/**"
+      - ".github/workflows/ci-ts.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    defaults:
+      run:
+        working-directory: packages/ts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+          cache-dependency-path: packages/ts/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - name: audit (high+)
+        run: pnpm audit --audit-level=high --prod

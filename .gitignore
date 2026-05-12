@@ -1,0 +1,46 @@
+# node / pnpm
+node_modules/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+.pnpm-store/
+
+# python / uv
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.tox/
+*.egg-info/
+
+# coverage / test
+coverage/
+htmlcov/
+.coverage
+*.lcov
+
+# env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+**/Credentials/**
+
+# os
+.DS_Store
+Thumbs.db
+
+# editor
+.idea/
+.vscode/
+*.swp
+
+# benchmark outputs (results committed selectively per release)
+benchmark/raw-responses/

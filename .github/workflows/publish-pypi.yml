@@ -1,0 +1,29 @@
+name: publish-pypi
+
+on:
+  push:
+    tags:
+      - "py-v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write  # PyPI trusted publishing via OIDC
+    defaults:
+      run:
+        working-directory: packages/python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: uv pip install --system -e ".[dev]"
+      - run: pytest -v
+      - run: uv pip install --system build
+      - run: python -m build
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packages/python/dist/

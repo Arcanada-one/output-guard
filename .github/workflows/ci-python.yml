@@ -1,0 +1,35 @@
+name: ci-python
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/python/**"
+      - "fixtures-shared/**"
+      - ".github/workflows/ci-python.yml"
+  pull_request:
+    paths:
+      - "packages/python/**"
+      - "fixtures-shared/**"
+      - ".github/workflows/ci-python.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: packages/python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv pip install --system -e ".[dev]"
+      - run: ruff check src tests
+      - run: mypy src
+      - run: pytest -v
+      - run: pip-audit --strict

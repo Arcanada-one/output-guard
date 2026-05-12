@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "arcanada-output-guard"
+version = "0.0.1"
+description = "Validate, repair, retry LLM structured output (JSON/YAML/TOML/python-literal)"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Arcanada", email = "pavel@arcanada.one" }]
+keywords = ["llm", "json", "yaml", "toml", "repair", "structured-output", "pydantic", "arcanada"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries",
+]
+requires-python = ">=3.11"
+dependencies = [
+  "pyyaml>=6.0.2",
+  "tomli-w>=1.0.0",
+  "pydantic>=2.9",
+  "jsonschema>=4.23",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arcanada-one/output-guard"
+Issues = "https://github.com/Arcanada-one/output-guard/issues"
+Repository = "https://github.com/Arcanada-one/output-guard"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3",
+  "pytest-asyncio>=0.24",
+  "hypothesis>=6.115",
+  "ruff>=0.7",
+  "mypy>=1.13",
+  "pip-audit>=2.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/output_guard"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
