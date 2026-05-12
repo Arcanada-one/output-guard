@@ -9,12 +9,10 @@ from hypothesis import strategies as st
 from output_guard import repair
 from output_guard.strategies import (
     fix_booleans,
-    fix_closers,
     fix_commas,
     fix_ellipsis,
     fix_encoding,
     fix_keys,
-    fix_newlines,
     fix_quotes,
     fix_truncated,
     fix_unicode,
