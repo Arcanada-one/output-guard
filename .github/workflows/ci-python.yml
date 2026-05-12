@@ -32,4 +32,6 @@ jobs:
       - run: ruff check src tests
       - run: mypy src
       - run: pytest -v
-      - run: pip-audit --strict
+      # pip-audit: not --strict (own package not yet on PyPI; strict-mode errors on un-auditable local install).
+      # Once arcanada-output-guard is published (M3), restore --strict.
+      - run: pip-audit
