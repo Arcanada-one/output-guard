@@ -158,7 +158,7 @@ results = repair_batch(
 ## Documentation
 
 - Source: https://github.com/Arcanada-one/output-guard/tree/main/packages/python
-- Design (two-pass orchestrator, strategy ordering): https://github.com/Arcanada-one/datarim/blob/main/datarim/creative/creative-CONN-0087-algorithm-strategy-ordering.md
+- Design (two-pass orchestrator, strategy ordering): see [repository docs](https://github.com/Arcanada-one/output-guard/blob/main/docs/explanation/repair-order.md)
 - TypeScript sibling: https://www.npmjs.com/package/@arcanada/output-guard
 
 ## License
