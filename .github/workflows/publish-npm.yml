@@ -12,7 +12,15 @@ on:
         default: "ts-v0.1.0"
 
 jobs:
+  token-probe:
+    uses: Arcanada-one/datarim/.github/workflows/token-health-probe.yml@main
+    with:
+      provider: npm
+    secrets:
+      token: ${{ secrets.NPM_TOKEN }}
+
   publish:
+    needs: token-probe
     runs-on: ubuntu-latest
     permissions:
       contents: read
