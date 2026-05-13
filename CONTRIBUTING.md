@@ -36,4 +36,4 @@ MIT. By contributing you agree your work is published under MIT.
 
 ## Provenance
 
-Spawned from task [CONN-0087](https://github.com/Arcanada-one/datarim) in the Arcanada ecosystem. See `PROJECT_AAL.md` for autonomy level.
+Part of the Arcanada ecosystem. See `PROJECT_AAL.md` for autonomy level.

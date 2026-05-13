@@ -10,8 +10,8 @@ Validate, repair, and retry LLM responses across **JSON / YAML / TOML / Python-l
 
 | Package | Registry | Status |
 |---|---|---|
-| `@arcanada/output-guard` | npm | bootstrap (v0.0.1 placeholder, v0.1.0 in progress per CONN-0087 M2) |
-| `arcanada-output-guard` | PyPI | bootstrap (v0.0.1 placeholder, v0.1.0 in progress per CONN-0087 M3) |
+| `@arcanada/output-guard` | npm | v0.1.x |
+| `arcanada-output-guard` | PyPI | v0.1.x |
 
 ## Layout
 
@@ -25,7 +25,7 @@ docs/               Diátaxis (tutorials / how-to / reference / explanation)
 
 ## Design
 
-- **Two-pass orchestrator** (combined-apply → isolating-fallback) per [creative-CONN-0087](https://github.com/Arcanada-one/datarim/blob/main/datarim/creative/creative-CONN-0087-algorithm-strategy-ordering.md).
+- **Two-pass orchestrator** (combined-apply → isolating-fallback) — see [`docs/explanation/repair-order.md`](docs/explanation/repair-order.md).
 - **Post-parse schema-validate MANDATORY** — orchestrator never returns success without schema check.
 - **`RepairReport.pass: "A" | "B" | "exhausted"`** for observability.
 - **AAL: L2 lib / L3 MC integration** — see [`PROJECT_AAL.md`](PROJECT_AAL.md).
@@ -36,4 +36,4 @@ MIT — see [LICENSE](LICENSE).
 
 ## Provenance
 
-Task: [CONN-0087](https://github.com/Arcanada-one/datarim/blob/main/datarim/tasks/CONN-0087-task-description.md) — Arcanada Ecosystem, Model Connector domain.
+Part of the Arcanada Ecosystem — Model Connector domain.

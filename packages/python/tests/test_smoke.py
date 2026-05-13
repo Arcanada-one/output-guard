@@ -1,4 +1,4 @@
-"""M1 bootstrap smoke — constants mirror TS, error hierarchy intact."""
+"""Bootstrap smoke — constants mirror TS, error hierarchy intact."""
 
 import pytest
 
@@ -11,7 +11,7 @@ from output_guard import (
 
 
 def test_max_retries_is_three() -> None:
-    """MAX_RETRIES MUST equal TS-side constant (creative-CONN-0087 F4)."""
+    """MAX_RETRIES MUST equal TS-side constant."""
     assert MAX_RETRIES == 3
 
 

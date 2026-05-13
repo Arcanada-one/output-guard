@@ -1,14 +1,12 @@
 # Repair order — two-pass orchestrator
 
-> Source: [`creative-CONN-0087-algorithm-strategy-ordering.md`](https://github.com/Arcanada-one/datarim/blob/main/datarim/creative/creative-CONN-0087-algorithm-strategy-ordering.md).
-
 ## Problem
 
 Strategies (`fix-quotes`, `fix-commas`, `fix-keys`, …) are non-commutative. Applying them in the wrong order, or in a single-pass sequence, can amplify damage. Reference: Corder's `fix-quotes × fix-commas` interaction bug.
 
 ## Decision
 
-**Two-pass orchestrator** — option O2 from creative-CONN-0087.
+**Two-pass orchestrator.**
 
 1. **Pass A — combined apply.** Run the full strategy chain in declared order, single pass. Most production failures (markdown fences, trailing commas, Python booleans) are independent and clean up in one shot. Fast path: ~250µs median.
 2. **Pass B — isolating fallback.** If Pass A output fails schema validation, replay each strategy in isolation against the original input, picking the first repair that schema-validates. Slower (~3ms worst case) but interaction-safe.

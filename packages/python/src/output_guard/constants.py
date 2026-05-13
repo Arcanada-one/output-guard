@@ -5,7 +5,7 @@ from typing import Final
 MAX_RETRIES: Final[int] = 3
 """Hard cap on retry attempts in ``guarded_generate``.
 
-Rationale: bounded cost (creative-CONN-0087 F4 adversarial-latency mitigation).
+Rationale: bounded cost — adversarial-latency mitigation.
 """
 
 RETRY_BACKOFF_MS: Final[int] = 250

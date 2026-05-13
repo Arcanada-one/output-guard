@@ -14,17 +14,17 @@ export interface RepairResult<T = unknown> {
   raw: string;
   strategiesApplied: string[];
   /**
-   * Authoritative pass label per creative-CONN-0087 two-pass orchestrator.
+   * Authoritative pass label of the two-pass orchestrator.
    * "A" — Pass A combined-apply parse path (also covers raw-parse fast path).
    * "B" — Pass B isolating single-step fallback.
    * Exhaustion is signalled by ParseError throw, not by this field — see
-   * orchestrator docstring + MC integration M4 catch contract.
+   * orchestrator docstring + consumer catch contract.
    */
   pass: "A" | "B";
 }
 
 /**
- * Two-pass orchestrator outcome (creative-CONN-0087):
+ * Two-pass orchestrator outcome:
  *   "A"         — Pass A combined-apply succeeded (fast path, ~250µs).
  *   "B"         — Pass B isolating single-step fallback succeeded.
  *   "exhausted" — both passes failed; schema validation rejected the output.

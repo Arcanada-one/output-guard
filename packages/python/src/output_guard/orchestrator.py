@@ -1,14 +1,14 @@
-"""Two-pass orchestrator (creative-CONN-0087).
+"""Two-pass orchestrator.
 
 Mirror of packages/ts/src/orchestrator.ts.
 
 Pass A: apply all 15 strategies in CANONICAL_ORDER, then parse once.
 Pass B: for each strategy individually, apply → parse. First success wins.
 
-Outcome contract (resolves M2 deviation #3 — caller-side catch is canonical):
+Outcome contract (caller-side catch is canonical):
 - Success → ``RepairResult`` with authoritative ``pass_: "A" | "B"``.
-- Schema rejects parsed data (F1 mandatory gate) → raise ``SchemaValidationError``.
-- Both passes parse-exhausted → raise ``ParseError``. MC integration (M4) MUST
+- Schema rejects parsed data → raise ``SchemaValidationError``.
+- Both passes parse-exhausted → raise ``ParseError``. Consumers MUST
   catch ``ParseError`` to construct ``repair_report.pass_: "exhausted"``.
 """
 

@@ -22,7 +22,7 @@
 ### MC integration (current L1 → target L3)
 
 - L1 (bootstrap): opt-in via `output_format` DTO field; backward-compat null bypass.
-- L2 (M4 ship): bounded auto-retry with circuit breaker (`MAX_RETRIES=3` + `AbortController` per-call timeout per creative-CONN-0087 F4).
+- L2 (M4 ship): bounded auto-retry with circuit breaker (`MAX_RETRIES=3` + `AbortController` per-call timeout — adversarial-latency mitigation).
 - L3 (post-M5 hardening): provider-native-first dispatch, Prometheus `mc_repair_retries_total` counter, replay-corpus regression gate, RepairReport observability surface.
 
 ## Weakest Links
@@ -33,4 +33,4 @@
 
 ## L5 decision
 
-**deferred** — grammar-constrained decoding (outlines/lm-format-enforcer) noted as L5-research in PRD-CONN-0087 Out of Scope. Reason: vendor lock-in + no CLI-connector coverage.
+**deferred** — grammar-constrained decoding (outlines/lm-format-enforcer) is L5-research, out of scope. Reason: vendor lock-in + no CLI-connector coverage.

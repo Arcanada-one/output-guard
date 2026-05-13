@@ -1,5 +1,4 @@
-// Public API barrel for @arcanada/output-guard v0.1.0
-// M2 implementation (CONN-0087)
+// Public API barrel for @arcanada/output-guard
 
 export { MAX_RETRIES, RETRY_BACKOFF_MS, FORMAT_DEFAULT, DEFAULT_TIMEOUT_MS } from "./constants.js";
 

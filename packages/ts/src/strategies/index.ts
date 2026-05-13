@@ -1,6 +1,6 @@
 /**
  * Strategy barrel + CANONICAL_ORDER definition.
- * The order matches the two-pass orchestrator spec (creative-CONN-0087):
+ * The order matches the two-pass orchestrator spec:
  * 1 fix-encoding → 2 strip-fences → 3 extract-json → 4 remove-comments →
  * 5 fix-commas → 6 fix-quotes → 7 fix-keys → 8 fix-values → 9 fix-booleans →
  * 10 fix-truncated → 11 fix-ellipsis → 12 fix-unicode → 13 fix-inner-quotes →

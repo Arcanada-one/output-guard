@@ -1,16 +1,16 @@
 /**
- * Two-pass orchestrator (creative-CONN-0087).
+ * Two-pass orchestrator.
  *
  * Pass A: apply all 15 strategies in CANONICAL_ORDER, then parse once.
  * Pass B: for each strategy individually, apply → parse. First success wins.
  *
- * Outcome contract (resolves M2 deviation #3 — caller-side catch is canonical):
+ * Outcome contract (caller-side catch is canonical):
  *   - Success → RepairResult with authoritative `pass: "A" | "B"`.
- *   - Schema rejects parsed data (F1 mandatory gate) → throw SchemaValidationError.
- *   - Both passes parse-exhausted → throw ParseError. MC integration (M4) MUST
+ *   - Schema rejects parsed data → throw SchemaValidationError.
+ *   - Both passes parse-exhausted → throw ParseError. Consumers MUST
  *     catch ParseError to construct `repair_report.pass: "exhausted"` and
- *     `final_valid: false`. SchemaValidationError stays separate so MC can
- *     distinguish "structurally repaired but wrong shape" from "unparseable".
+ *     `final_valid: false`. SchemaValidationError stays separate so callers
+ *     can distinguish "structurally repaired but wrong shape" from "unparseable".
  */
 import type { Format, RepairResult, ValidationResult } from "./results.js";
 import { ParseError, SchemaValidationError } from "./errors.js";

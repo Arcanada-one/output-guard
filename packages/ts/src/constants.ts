@@ -1,7 +1,7 @@
 /**
  * Hard cap on retry attempts in `guardedGenerate`.
  * Mirrored in `packages/python/src/output_guard/constants.py` — keep in sync.
- * Rationale: bounded cost (creative-CONN-0087 F4 adversarial-latency mitigation).
+ * Rationale: bounded cost — adversarial-latency mitigation.
  */
 export const MAX_RETRIES = 3 as const;
 
