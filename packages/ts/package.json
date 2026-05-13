@@ -1,6 +1,6 @@
 {
   "name": "@arcanada/output-guard",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Validate, repair, retry LLM structured output (JSON / YAML / TOML / Python literal) — 15-strategy two-pass repair chain with Zod adapter.",
   "license": "MIT",
   "author": "Arcanada <pavel@arcanada.one>",
