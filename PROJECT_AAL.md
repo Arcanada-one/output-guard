@@ -1,6 +1,6 @@
 # PROJECT_AAL — output-guard
 
-> AAL = Autonomous Agents Levels. Spec: `Areas/Architecture/AAL-Classification.md`.
+> AAL = Autonomous Agents Levels. Spec: `documentation/architecture/AAL-Classification.md`.
 
 ## Components
 
