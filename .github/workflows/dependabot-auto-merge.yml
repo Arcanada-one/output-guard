@@ -25,7 +25,7 @@ on:
     # Named explicitly per repository: workflow_run cannot glob, and check_suite
     # does NOT fire for Actions-created suites (anti-recursion rule) — verified
     # empirically in SEC-0039, the check_suite revision never triggered.
-    workflows: ["ci-python", "ci-ts", "public-surface", "publish-npm", "publish-pypi"]
+    workflows: [ci-python, ci-ts, public-surface, publish-npm, publish-pypi]
     types: [completed]
 
 permissions:
