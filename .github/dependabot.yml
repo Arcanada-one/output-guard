@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Both published packages live under packages/, not at the root. A config
+  # naming only `/` would have found no manifest at all here and watched
+  # nothing, while still looking like coverage on the repository listing.
+  - package-ecosystem: pip
+    directory: /packages/python
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: npm
+    directory: /packages/ts
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

@@ -35,6 +35,12 @@ jobs:
       # pip-audit: not --strict (own package not yet on PyPI; strict-mode errors on un-auditable local install).
       # Upgrade pip first to clear CVE-2026-6357 (fixed in pip 26.1).
       # CVE-2026-3219 (pip) has no fix as of 2026-05-12 — ignore with revisit 2026-08-12 per Arcanada quarterly audit cadence.
-      # Once arcanada-output-guard is published (M3), restore --strict.
-      - run: python -m pip install --upgrade pip
+      # Once arcanada-output-guard is published, restore --strict.
+      # setuptools is upgraded for the same reason as pip: pip-audit reads the
+      # whole installed environment, and the 3.11 hosted toolcache ships
+      # setuptools 79.0.1, which carries PYSEC-2026-3447 (fixed in 83.0.0). Only
+      # the 3.11 matrix leg failed; 3.12 and 3.13 seed a version past the fix.
+      # Upgraded rather than added to --ignore-vuln: a fix exists, so suppressing
+      # it would be lowering the bar to reach green.
+      - run: python -m pip install --upgrade pip setuptools
       - run: pip-audit --ignore-vuln CVE-2026-3219

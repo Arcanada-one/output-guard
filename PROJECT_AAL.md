@@ -22,8 +22,8 @@
 ### MC integration (current L1 → target L3)
 
 - L1 (bootstrap): opt-in via `output_format` DTO field; backward-compat null bypass.
-- L2 (M4 ship): bounded auto-retry with circuit breaker (`MAX_RETRIES=3` + `AbortController` per-call timeout — adversarial-latency mitigation).
-- L3 (post-M5 hardening): provider-native-first dispatch, Prometheus `mc_repair_retries_total` counter, replay-corpus regression gate, RepairReport observability surface.
+- L2 (next ship): bounded auto-retry with circuit breaker (`MAX_RETRIES=3` + `AbortController` per-call timeout — adversarial-latency mitigation).
+- L3 (later hardening release): provider-native-first dispatch, Prometheus `mc_repair_retries_total` counter, replay-corpus regression gate, RepairReport observability surface.
 
 ## Weakest Links
 

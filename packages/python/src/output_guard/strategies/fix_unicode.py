@@ -1,7 +1,7 @@
 """fix-unicode: Sanitize broken \\uXXXX escape sequences.
 
 Mirror of packages/ts/src/strategies/fix-unicode.ts. Walks char-by-char (not
-regex) for boundary-edge robustness; parity fixture required for M3.
+regex) for boundary-edge robustness; parity fixture still required.
 """
 
 from __future__ import annotations

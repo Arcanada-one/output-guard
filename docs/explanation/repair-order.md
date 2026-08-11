@@ -24,6 +24,6 @@ The orchestrator **never** returns success without a schema check, even on synta
 
 - **O1 fixed sequential single-pass** — brittle on strategy interactions (Corder bug).
 - **O3 DAG with pre/post invariants** — breaks TS↔Python byte-equal parity tractability.
-- **O4 property-based fuzzer** — deferred to M5 hardening.
+- **O4 property-based fuzzer** — deferred to a later hardening release.
 
 See full tradeoff matrix in the linked creative document.
