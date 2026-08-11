@@ -19,7 +19,7 @@ def test_all_in_one() -> None:
 
 def test_string_quote_boundary() -> None:
     # "True" as string label — word boundary between " and T means \bTrue\b matches
-    # this is a documented limitation per Implementation Notes M2 #1
+    # this is a documented limitation per Implementation Notes item 1
     assert fix_booleans('{"label": "True"}') == '{"label": "true"}'
 
 

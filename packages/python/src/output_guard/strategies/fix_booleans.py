@@ -2,7 +2,7 @@
 
 Mirror of packages/ts/src/strategies/fix-booleans.ts. Word-boundary based; known
 limitation: ``"True"`` inside a string is safe because ``"`` is non-word, but
-embedded forms like ``"x True y"`` still match — see Implementation Notes M2 #1.
+embedded forms like ``"x True y"`` still match — see Implementation Notes item 1.
 """
 
 from __future__ import annotations

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { MAX_RETRIES, FORMAT_DEFAULT } from "../src/index.js";
 import { ParseError, SchemaValidationError } from "../src/index.js";
 
-describe("M1 bootstrap smoke", () => {
+describe("bootstrap smoke", () => {
   it("MAX_RETRIES is 3 (mirrored in Python constants.py)", () => {
     expect(MAX_RETRIES).toBe(3);
   });
