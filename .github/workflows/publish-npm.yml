@@ -7,24 +7,28 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: "Git ref to publish from (default: ts-v0.1.0)"
+        description: "Git tag to publish from (e.g. ts-v0.1.6)"
         required: true
-        default: "ts-v0.1.0"
 
 jobs:
-  token-probe:
-    uses: Arcanada-one/datarim/.github/workflows/token-health-probe.yml@main
-    with:
-      provider: npm
-    secrets:
-      token: ${{ secrets.NPM_TOKEN }}
-
+  # Publishes via npm Trusted Publishing (OIDC) — no NPM_TOKEN anywhere.
+  # The trust is registered on the package itself (npmjs.com -> Access ->
+  # Trusted Publisher) and is bound to THIS repo + THIS workflow filename, so
+  # renaming this file breaks publishing until the trust is updated to match.
+  #
+  # Requirements the registry enforces (npm docs, checked 2026-08-17):
+  #   - GitHub-HOSTED runner. Self-hosted runners cannot obtain an OIDC token
+  #     the registry accepts, so `runs-on` must stay `ubuntu-latest`.
+  #   - node >= 22.14 and npm >= 11.5.1. Node 22 bundles npm 10.9.x, which is
+  #     below the floor — hence the explicit npm upgrade step below.
+  #   - pnpm >= 10.19 (OIDC support). Pinned to 10.x on purpose: pnpm 11 had an
+  #     OIDC regression (pnpm#11513, fixed 2026-05-08) and a publish path is a
+  #     poor place to ride a fresh fix.
   publish:
-    needs: token-probe
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # npm provenance via OIDC
+      id-token: write  # mints the OIDC token npm authenticates with
     defaults:
       run:
         working-directory: packages/ts
@@ -32,16 +36,20 @@ jobs:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10.34.5
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: "22.14"
           registry-url: "https://registry.npmjs.org"
           cache: pnpm
           cache-dependency-path: packages/ts/pnpm-lock.yaml
+      # Node 22 ships npm 10.9.x; trusted publishing needs >= 11.5.1.
+      - run: npm install -g npm@latest
+        working-directory: .
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm publish --access public --provenance --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # No --provenance: under trusted publishing npm generates and publishes
+      # provenance attestations automatically. No NODE_AUTH_TOKEN: the OIDC
+      # exchange IS the authentication.
+      - run: pnpm publish --access public --no-git-checks
