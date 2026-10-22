@@ -18,7 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20, 22]
+        # Current lines that received the October 2026 security release.
+        node: [22, 24]
     defaults:
       run:
         working-directory: packages/ts
@@ -30,6 +31,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
+          # The 2026-10-22 ubuntu-latest toolcache still has 22.23.3 and 24.21.0.
+          # check-latest reads nodejs.org/dist and installs 22.23.4 / 24.22.1.
+          check-latest: true
           cache: pnpm
           cache-dependency-path: packages/ts/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
