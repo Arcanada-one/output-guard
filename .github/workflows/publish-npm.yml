@@ -39,7 +39,9 @@ jobs:
           version: 10.34.5
       - uses: actions/setup-node@v7
         with:
-          node-version: "22.14"
+          # October 2026 security release for the 22.x line (CVE-2026-111497 and others).
+          # Still meets the npm trusted-publishing floor of node >= 22.14.
+          node-version: "22.23.4"
           registry-url: "https://registry.npmjs.org"
           cache: pnpm
           cache-dependency-path: packages/ts/pnpm-lock.yaml

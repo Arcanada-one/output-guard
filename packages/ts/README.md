@@ -95,7 +95,7 @@ console.log(result.strategiesApplied); // [] when raw was already valid
 
 ## Requirements
 
-Node >= 18 (recommended 20+)
+Node 22.23.4+ on the 22.x line, 24.22.1+ on the 24.x line, or 26.12.1+.
 
 ## Documentation
 
