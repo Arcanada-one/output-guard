@@ -1,19 +1,45 @@
+# ORDER-20261111-PR-BACKLOG-TOP §2.4: grouped + throttled Dependabot.
+# Both published packages live under packages/, not at the root. A config
+# naming only `/` would have found no manifest at all here and watched
+# nothing, while still looking like coverage on the repository listing.
+# Majors stay ignored so Dependabot does not reopen one-by-one major noise;
+# SHA pin refreshes for github-actions remain human-reviewed in batch PRs.
 version: 2
 updates:
-  # Both published packages live under packages/, not at the root. A config
-  # naming only `/` would have found no manifest at all here and watched
-  # nothing, while still looking like coverage on the repository listing.
   - package-ecosystem: pip
     directory: /packages/python
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 1
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: npm
     directory: /packages/ts
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 1
+    allow:
+      - dependency-type: "all"
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 1
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
