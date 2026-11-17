@@ -15,7 +15,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, ci-general]
     strategy:
       matrix:
         # Current lines that received the October 2026 security release.

@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, ci-general]
     environment: pypi
     permissions:
       id-token: write  # PyPI trusted publishing via OIDC
