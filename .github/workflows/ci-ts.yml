@@ -19,6 +19,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, Linux, X64, ci-general]
     strategy:
+      fail-fast: false
       matrix:
         # Current lines that received the October 2026 security release.
         node: [22, 24]
@@ -27,9 +28,12 @@ jobs:
         working-directory: packages/ts
     steps:
       - uses: actions/checkout@v7
+      # dest under runner.temp: default ~/setup-pnpm races when matrix jobs
+      # share a self-hosted runner home (ENOTEMPTY rmdir on arcana-prd-general-*).
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+          dest: ${{ runner.temp }}/setup-pnpm-${{ matrix.node }}
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
