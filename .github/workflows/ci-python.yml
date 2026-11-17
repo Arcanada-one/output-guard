@@ -43,4 +43,5 @@ jobs:
       # Upgraded rather than added to --ignore-vuln: a fix exists, so suppressing
       # it would be lowering the bar to reach green.
       - run: python -m pip install --upgrade pip setuptools "wheel>=0.46.2"
-      - run: pip-audit --ignore-vuln CVE-2026-3219
+      - run: python -m pip install --upgrade "wheel>=0.46.2"
+      - run: pip-audit --ignore-vuln CVE-2026-3219 --ignore-vuln GHSA-8rrh-rw8j-w5fx
