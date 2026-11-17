@@ -16,6 +16,8 @@ permissions:
 jobs:
   governance:
     name: governance-diff-guard
+    # Datarim fork deny: refuse untrusted fork PR code on org self-hosted runners.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, Linux, X64, ci-general]
     steps:
       - uses: Arcanada-one/shared-workflows/.github/actions/governance-diff-guard@e08282c9e0f2de32d94c1850918fa87e250bd80a
