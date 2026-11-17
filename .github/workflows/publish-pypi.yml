@@ -7,6 +7,9 @@ on:
 
 jobs:
   publish:
+    # Trusted Publishing (OIDC) EXCEPTION — mirror publish-npm.yml:
+    # self-hosted runners cannot obtain a registry-accepted OIDC token.
+    # Tag-gated only (py-v*) — merge of a CI PR does not publish.
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
