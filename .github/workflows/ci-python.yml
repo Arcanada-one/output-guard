@@ -7,11 +7,13 @@ on:
       - "packages/python/**"
       - "fixtures-shared/**"
       - ".github/workflows/ci-python.yml"
+      - ".github/workflows/publish-pypi.yml"
   pull_request:
     paths:
       - "packages/python/**"
       - "fixtures-shared/**"
       - ".github/workflows/ci-python.yml"
+      - ".github/workflows/publish-pypi.yml"
 
 jobs:
   test:
