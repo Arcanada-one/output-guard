@@ -10,8 +10,7 @@ jobs:
     # PyPI Trusted Publishing via GitHub OIDC is expected to work on
     # self-hosted runners (pypa/gh-action-pypi-publish README). Tag-gated
     # only (py-v*) — merge of a CI PR does not publish.
-    # npm Trusted Publishing still requires a GitHub-hosted runner; see
-    # publish-npm.yml (docs.npmjs.com/trusted-publishers).
+    # npm publish uses secrets.NPM_TOKEN on self-hosted; see publish-npm.yml.
     runs-on: [self-hosted, Linux, X64, ci-general]
     environment: pypi
     permissions:
