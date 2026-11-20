@@ -34,6 +34,7 @@ jobs:
         working-directory: packages/ts
     steps:
       - uses: actions/checkout@v7
+      # Keep this job's pnpm setup in its own temporary directory.
       - uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
