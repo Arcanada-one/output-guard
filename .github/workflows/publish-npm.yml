@@ -47,8 +47,30 @@ jobs:
       - name: Publish dry-run (no secret)
         run: pnpm publish --dry-run --no-git-checks --access public
 
+  tag-ancestor-gate:
+    # Validate the tagged source without exposing NPM_TOKEN to its code.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ts-v')
+    runs-on: [self-hosted, Linux, X64, ci-general]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Require tag commit to be on main
+        env:
+          GH_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          if ! git merge-base --is-ancestor "$GH_SHA" refs/remotes/origin/main; then
+            echo "::error::tagged commit is not an ancestor of origin/main"
+            exit 1
+          fi
+
   publish:
-    needs: build
+    needs: [build, tag-ancestor-gate]
     # Publish only the commit attached to a ts-v* tag push — never a manual ref.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ts-v')
     runs-on: [self-hosted, Linux, X64, ci-general]

@@ -93,6 +93,33 @@ def test_publish_npm_refuses_manual_dispatch_and_checks_out_event_sha() -> None:
             assert "inputs.ref" not in yaml.dump(checkout)
 
 
+def test_publish_npm_requires_tokenless_tag_ancestor_gate() -> None:
+    doc = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    jobs = doc["jobs"]
+    gate = jobs["tag-ancestor-gate"]
+    gate_if = str(gate.get("if") or "")
+    assert "github.event_name == 'push'" in gate_if
+    assert "startsWith(github.ref, 'refs/tags/ts-v')" in gate_if
+
+    checkout = next(
+        step for step in gate["steps"]
+        if step.get("uses", "").startswith("actions/checkout@")
+    )
+    assert checkout.get("with", {}).get("fetch-depth") == 0
+    assert checkout.get("with", {}).get("ref") == "${{ github.sha }}"
+
+    gate_script = _job_scripts(gate)
+    assert "git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main" in gate_script
+    assert 'git merge-base --is-ancestor "$GH_SHA" refs/remotes/origin/main' in gate_script
+    assert "exit 1" in gate_script
+    assert "NODE_AUTH_TOKEN" not in yaml.dump(gate)
+    assert "secrets.NPM_TOKEN" not in yaml.dump(gate)
+
+    publish = jobs["publish"]
+    needs = publish.get("needs") or []
+    assert "tag-ancestor-gate" in needs, "token-bearing publish must depend on ancestor gate"
+
+
 def test_publish_npm_dry_run_job_needs_no_secret() -> None:
     doc = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
     assert "build" in doc["jobs"], "expected a build/dry-run job for PR CI"
