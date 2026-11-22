@@ -74,6 +74,7 @@ jobs:
     # Publish only the commit attached to a ts-v* tag push — never a manual ref.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ts-v')
     runs-on: [self-hosted, Linux, X64, ci-general]
+    environment: npm
     permissions:
       contents: read
     defaults:

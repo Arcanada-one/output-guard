@@ -55,6 +55,9 @@ def test_publish_npm_refuses_github_hosted_runners() -> None:
 def test_publish_npm_uses_token_not_oidc() -> None:
     doc = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
     publish = doc["jobs"]["publish"]
+    assert publish.get("environment") == "npm", (
+        "NPM_TOKEN must be an environment secret from the npm environment"
+    )
     perms = publish.get("permissions") or {}
     assert "id-token" not in perms, "publish must not request id-token: write"
     scripts = _job_scripts(publish)
@@ -63,6 +66,18 @@ def test_publish_npm_uses_token_not_oidc() -> None:
         "publish must bind NODE_AUTH_TOKEN from secrets.NPM_TOKEN"
     )
     assert "secrets.NPM_TOKEN" in yaml.dump(publish)
+
+
+def test_npm_token_reference_is_limited_to_npm_environment_job() -> None:
+    doc = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    jobs_with_npm_secret = [
+        name
+        for name, job in doc["jobs"].items()
+        if "secrets.NPM_TOKEN" in yaml.dump(job)
+        or "NODE_AUTH_TOKEN" in yaml.dump(job)
+    ]
+    assert jobs_with_npm_secret == ["publish"]
+    assert doc["jobs"]["publish"].get("environment") == "npm"
 
 
 def test_publish_npm_never_publishes_on_pull_request() -> None:
