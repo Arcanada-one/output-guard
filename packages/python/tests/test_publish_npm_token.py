@@ -70,11 +70,27 @@ def test_publish_npm_never_publishes_on_pull_request() -> None:
     publish_if = str(doc["jobs"]["publish"].get("if") or "")
     assert "pull_request" not in publish_if
     assert "startsWith(github.ref, 'refs/tags/ts-v')" in publish_if
-    assert "workflow_dispatch" in publish_if
-    assert "refs/heads/main" in publish_if
+    assert "workflow_dispatch" not in publish_if
+    assert "github.event_name == 'push'" in publish_if
     # PyYAML 1.1 coerces the workflow key `on` to boolean True.
     on = doc.get("on") or doc.get(True) or {}
     assert "pull_request" in on, "PR trigger required so dry-run runs in PR CI"
+
+
+def test_publish_npm_refuses_manual_dispatch_and_checks_out_event_sha() -> None:
+    """Manual refs cannot reach the token-bearing publish job."""
+    doc = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    on = doc.get("on") or doc.get(True) or {}
+    assert "workflow_dispatch" not in on, "manual ref publishing must be disabled"
+    for job in doc["jobs"].values():
+        checkouts = [
+            step for step in job.get("steps", [])
+            if step.get("uses", "").startswith("actions/checkout@")
+        ]
+        assert checkouts
+        for checkout in checkouts:
+            assert checkout.get("with", {}).get("ref") == "${{ github.sha }}"
+            assert "inputs.ref" not in yaml.dump(checkout)
 
 
 def test_publish_npm_dry_run_job_needs_no_secret() -> None:
