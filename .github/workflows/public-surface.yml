@@ -12,7 +12,7 @@ permissions:
 jobs:
   public-surface:
     if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.full_name == github.repository
-    uses: Arcanada-one/datarim/.github/workflows/public-surface-lint.yml@9709598f710c3d0c2d8af8958d39020de37b26c0
+    uses: Arcanada-one/datarim/.github/workflows/public-surface-lint.yml@8e738a4f583cb96904c41573ca5334dc148ec252
     with:
       datarim_ref: '9709598f710c3d0c2d8af8958d39020de37b26c0'
       paths: 'README.md CHANGELOG.md CONTRIBUTING.md PROJECT_AAL.md docs packages'
