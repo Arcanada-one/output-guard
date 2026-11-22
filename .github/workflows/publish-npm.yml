@@ -1,39 +1,35 @@
 name: publish-npm
 
+# Operator decision 2026-11-18: publish from our self-hosted runners with an
+# npm automation token (GitHub Actions secret NPM_TOKEN). npm Trusted
+# Publishing / OIDC is accepted only from GitHub-hosted runners, so this
+# workflow no longer uses ubuntu-latest, id-token: write, or --provenance
+# (provenance attestations are not supported off GitHub-hosted).
+
 on:
   push:
     tags:
       - "ts-v*"
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: "Git tag to publish from (e.g. ts-v0.1.6)"
-        required: true
+  pull_request:
+    paths:
+      - "packages/ts/**"
+      - ".github/workflows/publish-npm.yml"
 
 jobs:
-  # Publishes via npm Trusted Publishing (OIDC) — no NPM_TOKEN anywhere.
-  # The trust is registered on the package itself (npmjs.com -> Access ->
-  # Trusted Publisher) and is bound to THIS repo + THIS workflow filename, so
-  # renaming this file breaks publishing until the trust is updated to match.
-  #
-  # Requirements the registry enforces (npm docs, checked 2026-08-17):
-  #   - GitHub-HOSTED runner. Self-hosted runners cannot obtain an OIDC token
-  #     the registry accepts, so `runs-on` must stay `ubuntu-latest`.
-  #   - node >= 22.14 and npm >= 11.5.1. Node 22 bundles npm 10.9.x, which is
-  #     below the floor — hence the explicit npm upgrade step below.
-  #   - pnpm >= 10.19 (OIDC support). Pinned to 10.x on purpose: pnpm 11 had an
-  #     OIDC regression (pnpm#11513, fixed 2026-05-08) and a publish path is a
-  #     poor place to ride a fresh fix.
-  publish:
-    runs-on: ubuntu-latest
+  # Build + test + dry-run without NPM_TOKEN. Safe for pull_request CI.
+  build:
+    # Datarim fork deny: refuse untrusted fork PR code on org self-hosted runners.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, Linux, X64, ci-general]
     permissions:
       contents: read
-      id-token: write  # mints the OIDC token npm authenticates with
     defaults:
       run:
         working-directory: packages/ts
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
       # Prevent concurrent jobs from reading a partially written shared pnpm setup.
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
@@ -41,19 +37,68 @@ jobs:
           version: 10.34.5
       - uses: actions/setup-node@v7
         with:
-          # October 2026 security release for the 22.x line (CVE-2026-111497 and others).
-          # Still meets the npm trusted-publishing floor of node >= 22.14.
           node-version: "22.23.4"
           registry-url: "https://registry.npmjs.org"
           cache: pnpm
           cache-dependency-path: packages/ts/pnpm-lock.yaml
-      # Node 22 ships npm 10.9.x; trusted publishing needs >= 11.5.1.
-      - run: npm install -g npm@latest
-        working-directory: .
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
       - run: pnpm build
-      # No --provenance: under trusted publishing npm generates and publishes
-      # provenance attestations automatically. No NODE_AUTH_TOKEN: the OIDC
-      # exchange IS the authentication.
-      - run: pnpm publish --access public --no-git-checks
+      - name: Publish dry-run (no secret)
+        run: pnpm publish --dry-run --no-git-checks --access public
+
+  tag-ancestor-gate:
+    # Validate the tagged source without exposing NPM_TOKEN to its code.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ts-v')
+    runs-on: [self-hosted, Linux, X64, ci-general]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Require tag commit to be on main
+        env:
+          GH_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+          if ! git merge-base --is-ancestor "$GH_SHA" refs/remotes/origin/main; then
+            echo "::error::tagged commit is not an ancestor of origin/main"
+            exit 1
+          fi
+
+  publish:
+    needs: [build, tag-ancestor-gate]
+    # Publish only the commit attached to a ts-v* tag push — never a manual ref.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/ts-v')
+    runs-on: [self-hosted, Linux, X64, ci-general]
+    environment: npm
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: packages/ts
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+      # Prevent concurrent jobs from reading a partially written shared pnpm setup.
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          dest: ${{ runner.temp }}/setup-pnpm
+          version: 10.34.5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.23.4"
+          registry-url: "https://registry.npmjs.org"
+          cache: pnpm
+          cache-dependency-path: packages/ts/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # NODE_AUTH_TOKEN via setup-node registry-url .npmrc; no --provenance off GH-hosted.
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --access public --no-git-checks
